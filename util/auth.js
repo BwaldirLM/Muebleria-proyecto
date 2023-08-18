@@ -3,7 +3,7 @@ module.exports = {
       if(req.isAuthenticated()){
          return next()
       }
-      req.flash('alerta', 'Primero inicie sesion')
+      //req.flash('alerta', 'Primero inicie sesion')
       return res.redirect('/')
    },
 
@@ -11,7 +11,7 @@ module.exports = {
       if(!req.isAuthenticated()){
          return next()
       }
-      return res.redirect('/index')
+      return res.redirect('/ingreso')
    },
 
    

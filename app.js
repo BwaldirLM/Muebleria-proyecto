@@ -2,8 +2,10 @@ const express =  require('express');
 const path = require('path');
 const {engine} = require('express-handlebars');
 const session =require('express-session');
-const MySQLStore = require('express-mysql-session')
+const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport')
+const flash = require('express-flash');
+
 
 
 
@@ -26,24 +28,23 @@ app.engine('.hbs', engine({
  }));
 app.set('view engine', 'hbs');
 
-/*
+
 app.use(session({
     secret:'session',
     resave:false,
     saveUninitialized: false,
-}));
-/*
+
     store: new MySQLStore({
        host: 'localhost',
        user: 'root',
-       password: process.env.MYSQL_PASSWORD,
+       password: '123456789',
        puerto: 3306,
-       database: process.env.MYSQL_DATABASE
+       database: 'Muebleria'
     })
  }))
- */
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json())

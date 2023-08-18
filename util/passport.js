@@ -12,10 +12,10 @@ passport.use('local.login', new localStrategy({
     passReqToCallback: true
 }, async (req, usuario, contraseña, done) => {
     try {
-        let consulta = await pool.query('SELECT * FROM Usuario WHERE usuario = $1', [usuario]);
-        if (consulta.rows.length > 0) {
-            let user = consulta.rows[0];
-            let validPassword = await helpers.matchPassword(contraseña, user.contraseña);
+        let consulta = await pool.query('SELECT * FROM Usuario WHERE usuario = ?', [usuario]);
+        if (consulta.length > 0) {
+            let user = consulta[0];
+            let validPassword = await helpers.matchPassword(contraseña, user.contrasena);
             if (validPassword) {
                 // Autenticación exitosa
                 return done(null, user);  // No es necesario el tercer argumento
@@ -36,29 +36,32 @@ passport.use('local.login', new localStrategy({
 
 
 passport.use('local.signup', new localStrategy({
-   usernameField: 'Cod_usuario',
-   passwordField: 'Contrasena',
+   usernameField: 'usuario',
+   passwordField: 'contrasena',
    passReqToCallback: true
-}, async(req, Cod_usuario, Contrasena, done)=>{
-   let {Rol} = req.body
+}, async(req, usuario, contrasena, done)=>{
+   let {nombres, apellidos, email} = req.body
    const newUser = {
-      Cod_usuario,
-      Contrasena
+      usuario,
+      contrasena
    }
 
-   newUser.Contrasena = await helpers.encryptPassword(Contrasena);
-   newUser.Rol = Rol
+   newUser.contrasena = await helpers.encryptPassword(contrasena);
+   newUser.nombres = nombres;
+   newUser.apellidos = apellidos
+   newUser.email = email;
+   newUser.Rol = 'cliente';
    const result = await pool.query('INSERT INTO Usuario SET ?', [newUser])
-   newUser.id = result.insertId
-   newUser.rol = 'Docente'
+   
+   
    return done(null, newUser)
-}))
+}));
 
 passport.serializeUser((usr, done)=>{
-   done(null, usr.Cod_usuario)
+   done(null, usr.usuario)
 })
 
 passport.deserializeUser((async(id, done)=>{
-   const rows = await pool.query('SELECT * FROM Usuario WHERE Cod_usuario = ?', [id])
+   const rows = await pool.query('SELECT * FROM Usuario WHERE usuario = ?', [id])
    done(null, rows[0])
 }))
