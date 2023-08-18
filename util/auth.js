@@ -4,7 +4,7 @@ module.exports = {
          return next()
       }
       //req.flash('alerta', 'Primero inicie sesion')
-      return res.redirect('/')
+      return res.redirect('/ingreso')
    },
 
    isNotLogged(req, res, next){
@@ -14,5 +14,13 @@ module.exports = {
       return res.redirect('/ingreso')
    },
 
+   isAdmin(req, res, next){
+      if(req.isAuthenticated() && req.user.rol == 'administrador'){
+
+         return next()
+      }
+      //req.flash('alerta', 'Primero inicie sesion')
+      return res.redirect('/index')
+   },
    
 }

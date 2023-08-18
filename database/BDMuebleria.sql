@@ -4,10 +4,11 @@ use muebleria
 
 create table Usuario(
 	usuario varchar(30) primary key,
-	contraseña varchar(100) not null,		
+	contrasena varchar(100) not null,		
 	nombres varchar(50),
 	apellidos varchar(50),
-	email varchar(30)
+	email varchar(30), 
+    rol varchar(20) default 'cliente'
 );
 
 create table Mueble(
@@ -23,10 +24,12 @@ create table Mueble(
 	stock integer,
 	imagen varchar(20)
 );
-
+drop table detalleVenta, venta
 create table Venta(
 	id int auto_increment primary key,
-	fecha date 
+    id_usuario varchar(30), foreign key(id_usuario) references Usuario(usuario),
+    id_carrito int, foreign key(id_carrito) references Carrito(id),
+	fecha date
 );
 
 create table DetalleVenta(
@@ -43,5 +46,6 @@ create table Carrito(
 
 create table itemCarrito(
 	id_carrito int, foreign key(id_carrito) references Carrito(id),
-	id_mueble int, foreign key(id_mueble) references Mueble(id)
+	id_mueble int, foreign key(id_mueble) references Mueble(id),
+    cantidad int
 );

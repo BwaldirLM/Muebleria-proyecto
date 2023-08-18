@@ -1,9 +1,11 @@
-const {Router} = require('express')
+const {Router} = require('express');
+const pool = require('../database');
+const { isLogged } = require('../util/auth');
 
 const router = Router();
 
-router.get('/', (req, res)=>{
-    console.log(req.user);
+router.get('/',isLogged, async(req, res)=>{
+    
     res.render('index/index',{'user': req.user});
 });
 

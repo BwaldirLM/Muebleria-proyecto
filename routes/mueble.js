@@ -2,16 +2,17 @@ const {Router} = require('express');
 
 const pool = require('../database');
 
-
+const {isLogged, isNotLogged, isAdmin} = require('../util/auth')
 
 const router = Router();
 
-router.get('/', async(req, res)=>{
+router.get('/', isLogged, async(req, res)=>{
     let muebles = await pool.query('select * from mueble');
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -29,12 +30,12 @@ router.get('/', async(req, res)=>{
     res.render('mueble/mueblesTotal', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
 
-router.get('/salas', async(req, res)=>{
+router.get('/salas', isLogged, async(req, res)=>{
     let muebles = await pool.query('SELECT * FROM Mueble where categoria = ?',['Sala']);
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -51,12 +52,12 @@ router.get('/salas', async(req, res)=>{
     }
     res.render('mueble/mueblesSala', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
-router.get('/dormitorios', async(req, res)=>{
+router.get('/dormitorios', isLogged, async(req, res)=>{
     let muebles = await pool.query('SELECT * FROM Mueble where categoria = ?',['Dormitorio']);
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -73,12 +74,12 @@ router.get('/dormitorios', async(req, res)=>{
     }
     res.render('mueble/mueblesDormitorio', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
-router.get('/comedores', async(req, res)=>{
+router.get('/comedores', isLogged, async(req, res)=>{
     let muebles = await pool.query('SELECT * FROM Mueble where categoria = ?',['Comedor']);
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -96,13 +97,13 @@ router.get('/comedores', async(req, res)=>{
     res.render('mueble/mueblesComedor', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
 
-router.get('/dormitorios', async(req, res)=>{
+router.get('/dormitorios', isLogged, async(req, res)=>{
     let muebles = await pool.query('SELECT * FROM Mueble where categoria = ?',['Dormitorio']);
     
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -120,13 +121,13 @@ router.get('/dormitorios', async(req, res)=>{
     res.render('mueble/mueblesDormitorio', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
 
-router.get('/escritorios', async(req, res)=>{
+router.get('/escritorios', isLogged, async(req, res)=>{
     let muebles = await pool.query('SELECT * FROM Mueble where categoria = ?',['Escritorio']);
     
     let infoCarrito = [];
     let cantidadTotal = 0;
 
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', req.user.usuario])
     if(carritoLibre.length > 0){
         
         let carritoId = carritoLibre[0].id;
@@ -144,15 +145,16 @@ router.get('/escritorios', async(req, res)=>{
     res.render('mueble/mueblesEscritorio', {"muebles": muebles, "carrito": infoCarrito, 'cantidad': cantidadTotal});
 });
 
-router.get('/detalle/:id', async(req, res)=>{
+router.get('/detalle/:id', isLogged, async(req, res)=>{
     let {id} = req.params;
     let mueble = await pool.query('Select * from mueble where id = ?',[id]);
     res.render('mueble/muebleDetalle',{"mueble": mueble[0]});
 });
 
-router.post('/detalle/:id', async(req, res)=>{
-    const {usuario_id, mueble_id, cantidad} = req.body;
-    let carritoLibre = await pool.query('select * from Carrito where estado = ?', ['libre'])
+router.post('/detalle/:id',isLogged, async(req, res)=>{
+    const {mueble_id, cantidad} = req.body;
+    let usuario_id = req.user.usuario;
+    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', usuario_id])
     if(carritoLibre.length > 0){
         let {id} = carritoLibre[0];
         let item =await pool.query('SELECT * FROM ItemCarrito WHERE id_carrito = ? AND id_mueble = ?', [id, mueble_id]);
@@ -175,10 +177,10 @@ router.post('/detalle/:id', async(req, res)=>{
     res.redirect('/mueble')
 });
 
-router.get('/agregar', (req, res)=>{
+router.get('/agregar', isAdmin, (req, res)=>{
     res.render('mueble/agregar')
 })
-router.post('/agregar', async(req,res)=>{
+router.post('/agregar', isAdmin, async(req,res)=>{
     await pool.query('INSERT INTO Mueble SET ?',[req.body]);
     res.redirect('/mueble');
 });
