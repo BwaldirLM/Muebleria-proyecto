@@ -31,6 +31,8 @@ app.use(session({
     secret:'session',
     resave:false,
     saveUninitialized: false,
+}));
+/*
     store: new MySQLStore({
        host: 'localhost',
        user: 'root',
@@ -40,8 +42,8 @@ app.use(session({
     })
  }))
  */
- app.use(passport.initialize());
- app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json())

@@ -29,38 +29,31 @@
                                 <tr>
                                     <th>Producto</th>
                                     <th>Cantidad</th>
+                                    <th>Precio Unit.</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="row">
-                                            <div class="col col-4">
-                                                 <img src="../img/mueble.jpg" class="product-image" alt="Product Image">
+                                {{#each carrito}}
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                
+                                                <div class="col col-4">
+                                                    <img src="/img/{{mueble.imagen}}" class="product-image" alt="Product Image">
+                                                </div>
+                                                <div class="col col-8">
+                                                    <strong>{{mueble.tipo}}</strong>
+                                                </div>
                                             </div>
-                                            <div class="col col-8">
-                                                <strong>Mueble</strong>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">2</td>
-                                    <td class="align-middle">S/. 550.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="row">
-                                            <div class="col col-4">
-                                                 <img src="../img/mueble.jpg" class="product-image" alt="Product Image">
-                                            </div>
-                                            <div class="col col-8">
-                                                <strong>Mueble</strong>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">2</td>
-                                    <td class="align-middle">S/. 550.00</td>
-                                </tr>
+                                        </td>
+                                        <td class="align-middle">{{cantidad}}</td>
+                                        <td class="align-middle">S/. {{mueble.precio}}</td>
+                                        <td class="align-middle">S/. {{mueble.precioUnit}}</td>
+                                        
+                                    </tr>        
+                                {{/each}}
+                                
                             </tbody>
                         </table>
                     </div>
@@ -76,7 +69,7 @@
                                 <strong>Total</strong>
                             </div>
                             <div class="col col-5">
-                                <Strong>S/. 1500</Strong>
+                                <Strong>S/. {{total}}</Strong>
                             </div>
                         </div>
                         <div class="btn btn-outline-success">Pagar</div>

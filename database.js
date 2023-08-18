@@ -7,8 +7,9 @@ const pool = mysql.createPool(
     {
         host: 'localhost',
         user: 'root',
-        password: process.env.MYSQL_PASSWORD,
-        database: 'MUEBLERIA'
+        password: '123456789',
+        database:  'Muebleria', 
+        port: 3306
      }
 )
 
@@ -28,6 +29,7 @@ pool.getConnection((err, connection)=>{
    console.log('DB esta conectada')
    return;
 });
+
 
 pool.query = promisify(pool.query);
 
