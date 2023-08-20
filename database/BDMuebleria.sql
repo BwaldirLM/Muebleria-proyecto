@@ -22,9 +22,10 @@ create table Mueble(
 	ancho numeric,
 	largo numeric,
 	stock integer,
-	imagen varchar(20)
+	imagen MEDIUMBLOB,
+	mimetype varchar(10)
 );
-drop table detalleVenta, venta
+
 create table Venta(
 	id int auto_increment primary key,
     id_usuario varchar(30), foreign key(id_usuario) references Usuario(usuario),

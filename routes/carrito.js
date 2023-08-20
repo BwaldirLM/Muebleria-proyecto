@@ -8,22 +8,11 @@ const {isLogged, isNotLogged} = require('../util/auth')
 const router = Router();
 
 router.get('/',isLogged,async(req, res)=>{
-    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre',req.user.usuario])
-    let carrito = [];
+    let carrito = await pool.query('select imagen, mimetype, cantidad, tipo, precio, cantidad*Precio as precio_total from Carrito as C inner join itemCarrito  as IC on C.id = IC.id_carrito inner join Mueble as M on IC.id_mueble = M.id where estado = ? and id_usuario = ?', ['libre',req.user.usuario]);
     let totalPago = 0;
-    if(carritoLibre.length > 0){
-        let carritoId = carritoLibre[0].id;
-        let muebles = await pool.query('SELECT * FROM ItemCarrito WHERE id_carrito = ?', [carritoId]);
-        for (const mueble of muebles) {
-            // Accede a las propiedades del mueble dentro del bucle
-            let infoaux = {};
-            infoaux.cantidad = mueble.cantidad;
-            let muebleItem = await pool.query('select tipo, precio, imagen FROM MUEBLE WHERE id = ?',[mueble.id_mueble]);
-            muebleItem[0].precioUnit = muebleItem[0].precio*mueble.cantidad;
-            infoaux.mueble = muebleItem[0];
-            carrito.push(infoaux);
-            totalPago += muebleItem[0].precio*mueble.cantidad;
-        }          
+    for(let item of carrito){
+        item.imagen = item.imagen.toString('base64');
+        totalPago += item.precio*item.cantidad;
     }
     res.render('carrito/carrito', {'carrito':carrito, 'total': totalPago});
 });
