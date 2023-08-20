@@ -1,6 +1,7 @@
 const express =  require('express');
 const path = require('path');
 const {engine} = require('express-handlebars');
+const dateFormat = require('handlebars-dateformat');
 const session =require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport')
@@ -24,7 +25,7 @@ app.engine('.hbs', engine({
     layoutsDir:path.join(app.get('views'), 'layouts'),
     partialsDir:path.join(app.get('views'), 'partials'),
     extname:'.hbs',
-    //helpers:require('./lib/handlebars')
+    helpers:require('./util/handlebars')
  }));
 app.set('view engine', 'hbs');
 
@@ -35,11 +36,11 @@ app.use(session({
     saveUninitialized: false,
 
     store: new MySQLStore({
-       host: 'localhost',
+       host: process.env.HOST,
        user: 'root',
-       password: '123456789',
-       puerto: 3306,
-       database: 'Muebleria'
+       password: process.env.MYSQL_PASSWORD,
+       puerto: process.env.PORT,
+       database: process.env.MYSQL_DATABASE
     })
  }))
 app.use(flash());
@@ -62,12 +63,14 @@ const muebleRouter = require('./routes/mueble');
 const carritoRouter = require('./routes/carrito');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
+const comprasRouter = require('./routes/compras');
 
 //Rutas
 app.use('/mueble', muebleRouter);
 app.use('/carrito', carritoRouter);
 app.use('/', authRouter);
 app.use('/index', indexRouter);
+app.use('/compras', comprasRouter);
 
 app.listen(process.env.PORT, ()=>{
     console.log("Servir corriendo");

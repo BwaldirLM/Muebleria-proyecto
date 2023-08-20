@@ -16,7 +16,7 @@ create table Mueble(
 	tipo varchar(20),
 	categoria varchar(20),
 	descripcion text,
-	precio numeric,
+	precio double,
 	material varchar(25),
 	altura numeric,
 	ancho numeric,
