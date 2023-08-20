@@ -8,16 +8,12 @@ const passport = require('passport')
 const flash = require('express-flash');
 
 
-
-
 require('dotenv').config();
 require('./util/passport');
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(__dirname + '/uploads'));
-
 
 app.engine('.hbs', engine({
     defaultLayout:'main',

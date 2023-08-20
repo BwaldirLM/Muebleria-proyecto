@@ -53,6 +53,7 @@
                     <strong>Largo</strong>
                 </li>
               </ul>
+              <h5 class="mt-4">Stock disponible: {{mueble.stock}} unid.</h5>
               <h6 class="mt-3">Material: {{mueble.material}} </h6>
 
               <hr>
@@ -72,12 +73,12 @@
               <div class="row align-items-center">
                 <div class="col-6">
                     <div class="bg-green py-2 px-3 mt-4">
-                        <h2 class="mb-0">
-                            S/. {{mueble.precio}}
+                        <h2 class="mb-0 text-center">
+                            {{moneyFormat mueble.precio}}
                         </h2>                
                     </div>
                 </div>
-                <div class="col-6">                    
+                <div class="col-6 disabled">                    
                     <button type="button" class="btn btn-block bg-gradient-warning" onclick="agregar({{mueble.id}})">
                       <i class="fas fa-cart-plus fa-lg mr-2"></i>
                         Agregar
@@ -107,6 +108,7 @@
         const decrementarBtn = document.getElementById("decrementar");
 
         incrementarBtn.addEventListener("click", function () {
+            if(contador < {{mueble.stock}})
             contador++;
             valorContador.textContent = contador;
         });

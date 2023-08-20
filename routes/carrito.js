@@ -32,8 +32,12 @@ router.post('/', isLogged, async(req, res)=>{
         
         let {id_mueble, cantidad} = m;
         await pool.query('Insert into detalleVenta values(?,?,?)',[id_mueble, venta.insertId, cantidad]);
+        let stock = await pool.query('select stock from mueble where id = ?',[id_mueble]);
+        let stockActualizado = stock[0].stock-cantidad;
+        await pool.query('update Mueble set stock = ? where id = ?',[stockActualizado, id_mueble]);
     }
     await pool.query(`update Carrito set estado = 'vendido' where id = ?`,[carrito[0].id]);
+    
     res.redirect('/index')
 });
 

@@ -116,34 +116,36 @@ router.get('/detalle/:id', isLogged, async(req, res)=>{
 router.post('/detalle/:id',isLogged, async(req, res)=>{
     const {mueble_id, cantidad} = req.body;
     let usuario_id = req.user.usuario;
-    let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', usuario_id])
-    if(carritoLibre.length > 0){
-        let {id} = carritoLibre[0];
-        let item =await pool.query('SELECT * FROM ItemCarrito WHERE id_carrito = ? AND id_mueble = ?', [id, mueble_id]);
-        if(item.length > 0){
-            const cantidadActualizada = parseInt(item[0].cantidad) + parseInt(cantidad);
-            await pool.query('UPDATE ItemCarrito SET cantidad = ? WHERE id_carrito = ? AND id_mueble = ?', [cantidadActualizada, id, mueble_id]);
+    if(cantidad > 0){
+        let carritoLibre = await pool.query('select * from Carrito where estado = ? and id_usuario = ?', ['libre', usuario_id])
+        if(carritoLibre.length > 0){
+            let {id} = carritoLibre[0];
+            let item =await pool.query('SELECT * FROM ItemCarrito WHERE id_carrito = ? AND id_mueble = ?', [id, mueble_id]);
+            if(item.length > 0){
+                const cantidadActualizada = parseInt(item[0].cantidad) + parseInt(cantidad);
+                await pool.query('UPDATE ItemCarrito SET cantidad = ? WHERE id_carrito = ? AND id_mueble = ?', [cantidadActualizada, id, mueble_id]);
+            }
+            else{
+                await pool.query('insert into ItemCarrito (id_carrito, id_mueble, cantidad) VALUES (?, ?, ?)',[id, mueble_id, cantidad]);
+            }               
         }
         else{
-            await pool.query('insert into ItemCarrito (id_carrito, id_mueble, cantidad) VALUES (?, ?, ?)',[id, mueble_id, cantidad]);
-        }       
-       
-    }
-    else{
-        let carrito = await pool.query('INSERT INTO Carrito (id_usuario) VALUES (?)', [usuario_id]);
-        let id = carrito.insertId;
-        await pool.query('insert into ItemCarrito (id_carrito, id_mueble, cantidad) VALUES (?, ?, ?)',[id, mueble_id, cantidad]);       
+            let carrito = await pool.query('INSERT INTO Carrito (id_usuario) VALUES (?)', [usuario_id]);
+            let id = carrito.insertId;
+            await pool.query('insert into ItemCarrito (id_carrito, id_mueble, cantidad) VALUES (?, ?, ?)',[id, mueble_id, cantidad]);       
+
+        }
 
     }
-
+    
     res.redirect('/mueble')
 });
 
-router.get('/agregar', (req, res)=>{
+router.get('/agregar',isAdmin, (req, res)=>{
     res.render('mueble/agregar')
 })
 
-router.post('/agregar', async(req,res)=>{
+router.post('/agregar',isAdmin, async(req,res)=>{
     try {
         upload.single('imagen')(req, res, async (err) => {
           if (err instanceof multer.MulterError) {
