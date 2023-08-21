@@ -29,6 +29,15 @@ router.post('/registro',(req, res, next)=>{
        failureRedirect: '/registro',
        failureFlash: true
     })(req, res, next)
- })
+ });
+
+ router.get('/cerrar_sesion', isLogged, (req, res)=>{
+    req.logOut((err)=>{
+        if (err) {
+            console.log(err);
+        }
+    });
+    res.redirect('/ingreso');
+ });
 
 module.exports = router
