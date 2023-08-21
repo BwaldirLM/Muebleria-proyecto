@@ -59,6 +59,7 @@ const carritoRouter = require('./routes/carrito');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
 const comprasRouter = require('./routes/compras');
+const ventasRouter = require('./routes/ventas');
 
 //Rutas
 app.use('/mueble', muebleRouter);
@@ -66,6 +67,7 @@ app.use('/carrito', carritoRouter);
 app.use('/', authRouter);
 app.use('/index', indexRouter);
 app.use('/compras', comprasRouter);
+app.use('/ventas', ventasRouter);
 
 app.listen(process.env.PORT, ()=>{
     console.log("Servir corriendo");

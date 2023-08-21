@@ -1,0 +1,125 @@
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+         <h1>Ventas</h1>
+         </div>
+         <div class="col-sm-6">
+         <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+            <li class="breadcrumb-item active">Ventas</li>
+         </ol>
+         </div>
+      </div>
+   </div><!-- /.container-fluid -->
+   </section>
+<div class="container">
+   <div class="card mx-4">
+   <div class="card-header">
+      <h3 class="card-title">Equipos</h3>
+   </div>
+   <!-- /.card-header -->
+   <div class="card-body p-0">
+      <table class="table table-striped">
+      <thead>
+         <tr>
+            <th>Id</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Detalles</th>
+                 
+         </tr>
+      </thead>
+      <tbody>
+         {{#each ventas}}
+         <tr>
+            <td>{{id}}</td>
+            <td>{{id_usuario}}</td>
+            <td>{{dateFormat fecha "D/M/Y"}}</td>
+            <td>
+               <div class="btn-group">
+                  <button type="button" class="btn btn-info" onclick="detalles({{id}})">Detalles</button>
+               </div>
+            </td>
+         </tr>
+         {{/each}}
+      </tbody>
+      </table>
+   </div>
+   <!-- /.card-body -->
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="detalles_venta" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Detalles de la compra</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <table class="table table-striped">
+      <thead>
+         <tr class="text-center">
+            <th>Cantidad</th>
+            <th>Detalles</th>
+            <th>Precio</th>
+            <th>Precio Total</th>
+                 
+         </tr>
+      </thead>
+      <tbody id="detalles">
+         
+      </tbody>
+      </table>
+      <div id="nombres"></div>
+         <div id="apellidos"></div>
+         <div id="email"></div>
+         <div id="totalPago" class="text-center bg-orange "></div>
+         </div>
+         
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function detalles(id){
+      $('#detalles_venta').modal('show');
+      $.ajax({
+         url: `/ventas/${id}/detalle`,
+         method: 'GET',
+         success: (res) => { 
+            $('#detalles').empty();
+            for(detalle of res.detalles){
+               $('#detalles').append(`
+                  <tr class="text-center">
+                     <td class="align-middle">${detalle.cantidad}</td>
+                     <td class="align-middle">                        
+                        <p>${detalle.tipo}<b><br>${detalle.categoria}</b></p>
+                        
+                     </td>
+                     <td class="align-middle">S/. ${detalle.precio}</td>
+                     <td class="align-middle">S/. ${detalle.total}</td>
+                  </tr>
+               `);
+            }
+            $('#nombres').empty();
+            $('#apellidos').empty();
+            $('#email').empty();
+            $('#totalPago').empty();
+            $('#nombres').append(`<p><b>Nombres: </b>${res.comprador[0].nombres}</p>`)
+            $('#apellidos').append(`<p><b>Apellidos: </b>${res.comprador[0].apellidos}</p>`)
+            $('#email').append(`<p><b>Correo electronico: </b>${res.comprador[0].email}</p>`)
+            $('#totalPago').append(`<h3>Total del pago</h3><p>S/. ${res.comprador[0].total}</p>`)
+         },
+         error: (error) => {  // También podrías manejar errores aquí
+            console.error(error);
+         }
+      });
+   } 
+</script>
