@@ -1,6 +1,5 @@
 const {Router} = require('express');
 const multer = require('multer');
-const fs = require('fs');
 
 const pool = require('../database');
 
@@ -173,6 +172,19 @@ router.post('/agregar',isAdmin, async(req,res)=>{
       }
     //await pool.query('INSERT INTO Mueble SET ?',[req.body]);
     //res.redirect('/mueble');
+});
+
+router.get('/listar', isAdmin, async(req, res)=>{
+    let muebles = await pool.query('select * from mueble');
+    for(let mueble of muebles){
+        mueble.imagen = mueble.imagen.toString('base64');
+    }
+    res.render('mueble/listar', {muebles: muebles});
+});
+
+router.post('/editar', isAdmin, async(req, res)=>{
+    console.log('editar');
+    console.log(req.body);
 });
 
 module.exports = router;

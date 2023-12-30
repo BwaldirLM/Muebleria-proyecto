@@ -1,0 +1,180 @@
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+         <h1>Muebles</h1>
+         </div>
+         <div class="col-sm-6">
+         <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+            <li class="breadcrumb-item active">Muebles</li>
+         </ol>
+         </div>
+      </div>
+   </div><!-- /.container-fluid -->
+   </section>
+<div class="container">
+   <div class="card mx-4">
+   <div class="card-header">
+      <h3 class="card-title">Lista de muebles</h3>
+   </div>
+   <!-- /.card-header -->
+   <div class="card-body p-0">
+      <table class="table table-striped">
+      <thead>
+         <tr>
+            <th>Id</th>
+            <th>Tipo</th>
+            <th>Categoria</th>
+            <th>Precio</th>
+            <th>Material</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+                 
+         </tr>
+      </thead>
+      <tbody>
+         {{#each muebles}}
+         <tr>
+            <td>{{id}}</td>
+            <td>{{tipo}}</td>
+            <td>{{categoria}}</td>
+            <td>{{precio}}</td>
+            <td>{{material}}</td>
+            <td>{{stock}}</td>
+            <td>
+               <div class="btn-group">
+                  <button type="button" class="btn btn-primary" onclick="detalles({{id}}, '{{tipo}}', '{{categoria}}', '{{descripcion}}', {{precio}}, '{{material}}', {{altura}}, {{ancho}}, {{largo}}, {{stock}}, '{{imagen}}', '{{mimetype}}')">Editar</button>
+               </div>
+            </td>
+         </tr>
+         {{/each}}
+      </tbody>
+      </table>
+   </div>
+   <!-- /.card-body -->
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="detalles_venta" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Editar mueble</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form action="/mueble/editar" method="POST" role="form" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <label for="" class="col-sm-2 offset-sm-2 col-form-label">Id</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="tipo" id="mid" readonly required>
+                    </div>
+                </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Tipo</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="tipo" id="mtipo" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Categoria</label>
+                     <div class="col-sm-6">
+                        <select name="categoria" class="form-group custom-select" id="mcategoria" required>
+                           <option value selected>Elija una opcion</option>
+                           <option value="Sala">Sala</option>
+                           <option value="Comedor">Comedor</option>
+                           <option value="Dormitorio">Dormitorio</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Descripcion</label>
+                     <div class="col-sm-6">
+                        <textarea class="form-control" rows="3" placeholder="" name="descripcion" id="mdescripcion"></textarea>
+                     </div>
+                </div>
+                <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Precio</label>
+                     <div class="col-sm-6">
+                        <input type="number" class="form-control" name="precio" id="mprecio" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Material</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="material" id="mmaterial" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Altura</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="altura" id="maltura" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Ancho</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="ancho" id="mancho" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Largo</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="largo" id="mlargo" required>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Stock</label>
+                     <div class="col-sm-6">
+                        <input type="text" class="form-control" name="stock" id="mstock" required>
+                     </div>
+                  </div>
+                  <div id="imagen">
+                    
+                  </div>
+                  <div class="form-group row">
+                     <label for="" class="col-sm-2 offset-sm-2 col-form-label">Imagen</label>
+                     <div class="col-sm-6">
+                        <input type="file" class="form-control" name="imagen" accept=".jpg, .jpeg, .png">
+                     </div>
+                  </div>
+                  
+                  <div class="card-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                     
+                    <button type="submit" class="btn btn-success float-right">Guardar</button>
+                  </div>
+               </form>
+         </div>
+         <!--
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+         </div>
+         -->
+      </div>
+   </div>
+</div>
+<script>
+   function detalles(id, tipo, categoria, descripcion, precio, material, altura, ancho, largo, stock, imagen, mimetype){
+      $('#detalles_venta').modal('show');
+        $('#mid').val(id);
+        $('#mtipo').val(tipo);
+        //tb
+        $('#mcategoria').find(`option[value=${categoria}]`).prop('selected', true);
+
+        $('#mdescripcion').val(descripcion);
+        $('#mprecio').val(precio);
+        $('#mmaterial').val(material);
+        $('#maltura').val(altura);
+        $('#mancho').val(ancho);
+        $('#mlargo').val(largo);
+        //$('#imagen').empty();
+        //$('#imagen').append(`<img src="data:${mimeType};base64,${mueble.imagen}" alt="Product Image">`)
+        $('#mstock').val(stock);
+         
+        
+   } 
+</script>
